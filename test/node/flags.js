@@ -29,6 +29,10 @@ app.get('/no-content', function(req, res){
   res.status(204).end();
 });
 
+app.get('/bad-redirect', function(req, res){
+  res.sendStatus(302);
+});
+
 var base = 'http://localhost'
 var server;
 before(function listen(done) {
@@ -126,6 +130,17 @@ describe('flags', function(){
       .end(function(err, res){
         assert(!err);
         assert(res.noContent, 'response should be .noContent');
+        done();
+      });
+    })
+  })
+
+  describe('with 302 No Location', function(){
+    it("doesn't die", function(done){
+      request
+      .get('http://localhost:3004/bad-redirect')
+      .end(function(err, res){
+        assert(res.status, 302);
         done();
       });
     })
